@@ -84,6 +84,31 @@ function createCube(size, color) {
     return cube
 }
 
+// Circle with arrow
+function createRotationIndicator(direction, color, y) {
+    let group = new Three.Group()
+
+    let torusGeometry = new Three.TorusGeometry(0.2, 0.01, 16, 100)
+    let torusMaterial = new Three.MeshStandardMaterial({ color: color })
+    let torus = new Three.Mesh(torusGeometry, torusMaterial)
+
+    let coneGeometry = new Three.ConeGeometry(0.05, 0.1, 16)
+    let coneMaterial = new Three.MeshStandardMaterial({ color: color })
+    let cone = new Three.Mesh(coneGeometry, coneMaterial)
+    
+    torus.position.y = y
+    torus.rotation.x = Math.PI / 2
+    
+    cone.position.y = y
+    cone.position.x = - direction * 0.2
+    cone.rotation.x = - Math.PI / 2
+
+    group.add(torus)
+    group.add(cone)
+
+    return group
+}
+
 function main() {
     const renderer = new Three.WebGLRenderer
     renderer.setSize(window.innerWidth, window.innerHeight)
@@ -99,6 +124,9 @@ function main() {
     
     const cubeA = createCube(1, 0x0000ff)
     const cubeB = createCube(0.6, 0xff0000)
+
+    cubeA.add(createRotationIndicator(1, 0x0000ff, 1))
+    cubeB.add(createRotationIndicator(-1, 0xff0000, -1))
 
     scene.add(cubeA)
     scene.add(cubeB)
