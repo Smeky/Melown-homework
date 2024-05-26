@@ -17,12 +17,15 @@ function setupLights(scene) {
 
 function createCube(size, color) {
     let cube = new Three.Group()
+    let material = new Three.MeshStandardMaterial({ color })
+
+    // Create geometries (outside loop to avoid creating multiple instances of the same geometry)
+    let sphereGeometry = new Three.SphereGeometry(size / 12, 32, 32)
+    let cylinderGeometry = new Three.CylinderGeometry(size / 20, size / 20, size, 32)
 
     // Create spheres for corners
     for (let i = 0; i < 8; i++) {
-        let geometry = new Three.SphereGeometry(size / 12, 32, 32)
-        let material = new Three.MeshStandardMaterial({ color })
-        let mesh = new Three.Mesh(geometry, material)
+        let mesh = new Three.Mesh(sphereGeometry, material)
         cube.add(mesh)
 
         // Position corners
@@ -34,9 +37,7 @@ function createCube(size, color) {
 
     // Create top cylinders for edges
     for (let i = 0; i < 4; i++) {
-        let geometry = new Three.CylinderGeometry(size / 20, size / 20, size, 32)
-        let material = new Three.MeshStandardMaterial({ color })
-        let mesh = new Three.Mesh(geometry, material)
+        let mesh = new Three.Mesh(cylinderGeometry, material)
         cube.add(mesh)
 
         // Position edges
@@ -51,9 +52,7 @@ function createCube(size, color) {
 
     // Create bottom cylinders for edges
     for (let i = 0; i < 4; i++) {
-        let geometry = new Three.CylinderGeometry(size / 20, size / 20, size, 32)
-        let material = new Three.MeshStandardMaterial({ color })
-        let mesh = new Three.Mesh(geometry, material)
+        let mesh = new Three.Mesh(cylinderGeometry, material)
         cube.add(mesh)
 
         // Position edges
@@ -68,9 +67,7 @@ function createCube(size, color) {
 
     // Create side cylinders for edges
     for (let i = 0; i < 4; i++) {
-        let geometry = new Three.CylinderGeometry(size / 20, size / 20, size, 32)
-        let material = new Three.MeshStandardMaterial({ color })
-        let mesh = new Three.Mesh(geometry, material)
+        let mesh = new Three.Mesh(cylinderGeometry, material)
         cube.add(mesh)
 
         // Position edges
@@ -118,6 +115,8 @@ function main() {
     scene.background = new Three.Color(0x212121)
     
     const camera = new Three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
+    camera.position.z = 5
+
     const controls = new OrbitControls(camera, renderer.domElement)
 
     setupLights(scene)
@@ -130,8 +129,6 @@ function main() {
 
     scene.add(cubeA)
     scene.add(cubeB)
-    
-    camera.position.z = 5
 
     function animate() {
         requestAnimationFrame(animate)
